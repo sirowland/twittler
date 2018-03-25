@@ -3,21 +3,95 @@
   <head>
     <script src="jquery.js"></script>
     <script src="data_generator.js"></script>
+    <link rel="stylesheet" href="styles.css"> 
   </head>
   <body>
     <script>
 
       $(document).ready(function(){
         var $body = $('body');
-        $body.html('');
 
-        var index = streams.home.length - 1;
-        while(index >= 0){
-          var tweet = streams.home[index];
-          var $tweet = $('<div></div>');
-          $tweet.text('@' + tweet.user + ': ' + tweet.message);
-          $tweet.appendTo($body);
-          index -= 1;
+        var $header = $('<h1>Twittler</h1>');
+        var $searchError = $('<div>User not found!</div>');
+
+        var $tweetDiv = $('<div></div>');
+
+        $header.appendTo($body);
+        $tweetDiv.appendTo($body);
+
+        populateTweets();
+        startTweets();
+
+        $('h1').on('click', function() {
+          populateTweets();
+        });
+
+        function startTweets() {
+          return setInterval(populateTweets,15000);
+        }
+
+        // renders all of the tweets to the DOM
+        function populateTweets() {
+          $('.tweet').remove();
+          var index = streams.home.length - 1;
+          while(index >= 0){
+            createTweet(streams.home, index);
+            index -= 1;
+          }
+          $('.tweet').on('click', '.name', function() {
+            var inputVal = $(this).text().slice(1);
+            filterTweets(inputVal);
+          });
+        }
+
+        //given a username it strips the dom of the other tweets and stops the interval execution
+        function filterTweets(username) {
+          var checkUser = users.includes(username);
+
+          if (checkUser) {
+            $tweetDiv.html('');
+            var tweetArr = streams.home.slice().filter(a => a.user === username);
+            var index = tweetArr.length - 1;
+            while(index >= 0) {
+              createTweet(tweetArr, index);
+              index -= 1;
+            }
+          } else {
+            $searchError.appendTo($filterDiv);
+            populateTweets();
+          }
+        }
+
+        // creates tweets and puts them in the DOM
+        function createTweet(tweetArray ,index) {
+            var $tweet = $(
+              `<div class='tweet'>
+                <div class='name'></div>
+                <div class='date'></div>
+                <br>
+                <div class='text'></div>
+               </div>`
+              );
+            var tweet = tweetArray[index];
+            $tweet.find('.name').text('@' + tweet.user);
+            $tweet.find('.date').text(getDateFormat(tweet.created_at));
+            $tweet.find('.text').text(tweet.message);
+            $tweet.data('username', tweet.user);
+            $tweet.appendTo($tweetDiv);
+        }
+
+        // creates the date format we want to show users a friendly time since the tweet
+        function getDateFormat(createDate) {
+          var now = new Date();
+          var secondDiff = Math.abs(createDate - now) / 1000;
+
+          if (secondDiff < 3600) {
+            return Math.floor(secondDiff / 60) + 'm'
+          } else if (secondDiff >= 3600 && secondDiff < 86400){
+            return Math.floor(secondDiff / 3600) + 'h'
+          } else {
+            return Math.floor(secondDiff / 86400) + 'd'
+          }
         }
 
       });

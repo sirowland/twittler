@@ -1,0 +1,37 @@
+body { 
+	width: 960px; 
+	margin: 0 auto; 
+}
+
+h1 {
+	text-align: center;
+}
+
+.tweet {
+	text-align: center;
+	margin: 15px auto;
+	border: 2px solid red;
+  border-radius: 5px;
+  width: 400px;
+  background-color: light-blue;
+}
+
+.name {
+	float: left;
+	color: grey;
+}
+
+.date {
+	float: right ;
+	color: grey;
+}
+
+.text {
+	text-align: : left;
+	margin: 0px 15px 15px 15px;
+}
+
+button {
+	margin: 5px auto;
+}
+
