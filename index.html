@@ -12,32 +12,49 @@
         var $body = $('body');
 
         var $header = $('<h1>Twittler</h1>');
-        var $searchError = $('<div>User not found!</div>');
+        var $buttonDiv = $('<div></div>');
+        var $refreshButton = $('<button>Refresh Tweets</button>')
 
         var $tweetDiv = $('<div></div>');
 
         $header.appendTo($body);
+        $buttonDiv.appendTo($body);
+        $refreshButton.appendTo($buttonDiv);
         $tweetDiv.appendTo($body);
 
-        populateTweets();
-        startTweets();
+        populateAllTweets();
+        setInterval(updateTimestamp, 1000);
 
         $('h1').on('click', function() {
-          populateTweets();
+          populateAllTweets();
         });
 
-        function startTweets() {
-          return setInterval(populateTweets,15000);
-        }
+        $('button').on('click', function() {
+          populateAllTweets();
+        });
+
+        $('.tweet').on('click', '.name', function() {
+          var inputVal = $(this).text().slice(1);
+          filterTweets(inputVal);
+        });
 
         // renders all of the tweets to the DOM
-        function populateTweets() {
+        function populateAllTweets() {
           $('.tweet').remove();
           var index = streams.home.length - 1;
           while(index >= 0){
             createTweet(streams.home, index);
             index -= 1;
           }
+
+          $('h1').on('click', function() {
+            populateAllTweets();
+          });
+
+          $('button').on('click', function() {
+            populateAllTweets();
+          });
+
           $('.tweet').on('click', '.name', function() {
             var inputVal = $(this).text().slice(1);
             filterTweets(inputVal);
@@ -46,20 +63,22 @@
 
         //given a username it strips the dom of the other tweets and stops the interval execution
         function filterTweets(username) {
-          var checkUser = users.includes(username);
-
-          if (checkUser) {
-            $tweetDiv.html('');
-            var tweetArr = streams.home.slice().filter(a => a.user === username);
-            var index = tweetArr.length - 1;
-            while(index >= 0) {
-              createTweet(tweetArr, index);
-              index -= 1;
-            }
-          } else {
-            $searchError.appendTo($filterDiv);
-            populateTweets();
+          //stop the populating of all tweets
+          $tweetDiv.html('');
+          var tweetArr = streams.home.slice().filter(a => a.user === username);
+          var index = tweetArr.length - 1;
+          while(index >= 0) {
+            createTweet(tweetArr, index);
+            index -= 1;
           }
+
+          $('h1').on('click', function() {
+            populateAllTweets();
+          });
+
+          $('button').on('click', function() {
+            filterTweets(username);
+          });
         }
 
         // creates tweets and puts them in the DOM
@@ -76,8 +95,15 @@
             $tweet.find('.name').text('@' + tweet.user);
             $tweet.find('.date').text(getDateFormat(tweet.created_at));
             $tweet.find('.text').text(tweet.message);
-            $tweet.data('username', tweet.user);
+            $tweet.data('timestamp', tweet.created_at);
             $tweet.appendTo($tweetDiv);
+        }
+
+        function updateTimestamp() {
+          $('.tweet').each(function(){
+            var timestamp = $(this).data('timestamp');
+            $(this).find('.date').text(getDateFormat(timestamp));
+          });
         }
 
         // creates the date format we want to show users a friendly time since the tweet
