@@ -5,33 +5,58 @@ body {
 
 h1 {
 	text-align: center;
-}
-
-.tweet {
-	text-align: center;
-	margin: 15px auto;
-	border: 2px solid red;
-  border-radius: 5px;
-  width: 400px;
-  background-color: light-blue;
-}
-
-.name {
-	float: left;
-	color: grey;
-}
-
-.date {
-	float: right ;
-	color: grey;
-}
-
-.text {
-	text-align: : left;
-	margin: 0px 15px 15px 15px;
+	color: PowderBlue;
+	text-decoration-color: black;
+	font-size: 50px;
 }
 
 button {
 	margin: 5px auto;
+	border-radius: 8px;
+	font-size: 16px;
+	border: none;
+	background-color: PowderBlue;
+	display: inline-block;
+	padding: 7px 7px;
+}
+
+.buttonDiv {
+	text-align: center;
+}
+
+.tweet {
+	margin: 15px auto;
+	border: 1px solid black;
+  border-radius: 5px;
+  width: 400px;
+  background-color: PowderBlue;
+}
+
+.name {
+	float: left;
+	text-align: left;
+	color: grey;
+	margin: 5px 0px 0px 5px;
+}
+
+.highlight {
+	color: blue;
+}
+
+.date {
+	float: right;
+	text-align: right;
+	color: grey;
+	margin: 5px 5px 0px 0px;
+}
+
+.text {
+	clear: both;
+	text-align: left;
+	margin: 0px 15px 15px 15px;
+}
+
+#tweetDiv {
+	text-align: center;
 }
 

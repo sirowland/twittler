@@ -12,10 +12,10 @@
         var $body = $('body');
 
         var $header = $('<h1>Twittler</h1>');
-        var $buttonDiv = $('<div></div>');
-        var $refreshButton = $('<button>Refresh Tweets</button>')
+        var $buttonDiv = $('<div class="buttonDiv"></div>');
+        var $refreshButton = $('<button>Refresh Feed</button>')
 
-        var $tweetDiv = $('<div></div>');
+        var $tweetDiv = $('<div id="tweetDiv"></div>');
 
         $header.appendTo($body);
         $buttonDiv.appendTo($body);
@@ -25,22 +25,11 @@
         populateAllTweets();
         setInterval(updateTimestamp, 1000);
 
-        $('h1').on('click', function() {
-          populateAllTweets();
-        });
-
-        $('button').on('click', function() {
-          populateAllTweets();
-        });
-
-        $('.tweet').on('click', '.name', function() {
-          var inputVal = $(this).text().slice(1);
-          filterTweets(inputVal);
-        });
 
         // renders all of the tweets to the DOM
         function populateAllTweets() {
           $('.tweet').remove();
+          $('#username').remove();
           var index = streams.home.length - 1;
           while(index >= 0){
             createTweet(streams.home, index);
@@ -50,7 +39,7 @@
           $('h1').on('click', function() {
             populateAllTweets();
           });
-
+          
           $('button').on('click', function() {
             populateAllTweets();
           });
@@ -59,12 +48,23 @@
             var inputVal = $(this).text().slice(1);
             filterTweets(inputVal);
           });
+
+          $('.tweet').on('mouseenter', '.name', function() {
+            $(this).toggleClass('highlight');
+          });
+
+          $('.tweet').on('mouseleave', '.name', function() {
+            $(this).removeClass('highlight');
+          });
         }
 
         //given a username it strips the dom of the other tweets and stops the interval execution
         function filterTweets(username) {
           //stop the populating of all tweets
           $tweetDiv.html('');
+          var $userName = $('<h2 id="username"></h2>');
+          $userName.text(username + '\'s Twittler feed' );
+          $userName.prependTo($tweetDiv);
           var tweetArr = streams.home.slice().filter(a => a.user === username);
           var index = tweetArr.length - 1;
           while(index >= 0) {
@@ -85,10 +85,13 @@
         function createTweet(tweetArray ,index) {
             var $tweet = $(
               `<div class='tweet'>
-                <div class='name'></div>
-                <div class='date'></div>
-                <br>
-                <div class='text'></div>
+                <div>
+                  <div class='name'></div>
+                  <div class='date'></div>
+                </div>
+                <div>
+                  <div class='text'></div>
+                </div>
                </div>`
               );
             var tweet = tweetArray[index];
